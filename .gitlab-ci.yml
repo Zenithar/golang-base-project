@@ -1,0 +1,16 @@
+stages:
+  - build
+
+before_script:
+  - docker info
+
+build_image:
+  stage: build
+  script:
+    - export VERSION=`cat VERSION`
+    - docker build --no-cache -t user/goproject:$VERSION .
+    - docker save user/goproject:$VERSION > /tmp/image.tar
+    - docker load registry.company.com/goproject:$VERSION < /tmp/image.tar
+    - docker push registry.company.com/goproject:$VERSION
+  tags:
+    - docker
